@@ -65,13 +65,13 @@
             return true;
         }
 
-        public bool TryGet(int index, ref Tvalue value)
+        public bool TryGet(int index, ref Tkey key, ref Tvalue value)
         {
             if (index < 0)
                 return false;
             if (index >= values.Count)
                 return false;
-            var key = order.Skip(index - 1).Take(1).First().Value;
+            key = order.Skip(index - 1).Take(1).First().Value;
             var entry = values[key];
             order.Remove(entry.orderKey);
             entry.orderKey = NextOrderKey;
@@ -106,20 +106,25 @@
             lru.Add("orange", 20);
             lru.Add("banana", 30);
             int value = int.MinValue;
-            Console.WriteLine(lru.TryGet("apple", ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet(-1, ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet(0, ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet(1, ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet(2, ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet("orange", ref value));
-            Console.WriteLine(value);
-            Console.WriteLine(lru.TryGet("banana", ref value));
-            Console.WriteLine(value);
+            string key = "";
+            bool found = lru.TryGet(key="apple", ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"{key} not found");
+            found = lru.TryGet(2, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"2 not found");
+            found = lru.TryGet(1, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"1 not found");
+            found = lru.TryGet(0, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"0 not found");
+            found = lru.TryGet(-1, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"-1 not found");
+            found = lru.TryGet(0, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"0 not found");
+            found = lru.TryGet(key="orange", ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"{key} not found");
+            found = lru.TryGet(key="banana", ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"{key} not found");
+            found = lru.TryGet(0, ref key, ref value);
+            if (found) Console.WriteLine($"found: {key}={value}"); else Console.WriteLine($"0 not found");
             Console.ReadKey();
         }
 
