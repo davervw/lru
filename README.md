@@ -8,3 +8,4 @@ Notes
 2. Used IDE warnings, suggestions
 3. Hmmm, maybe could this be replaced with a priority queue?   Would that make it trivial?
 4. What C# interfaces should this class instantiate to be generally useful?
+5. Improve tests, more expectations validated, and change to automated tests instead of manual run
