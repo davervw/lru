@@ -1,0 +1,4 @@
+src/lrucs/.vs
+*.swp
+src/lrucs/bin/
+src/lrucs/obj/
