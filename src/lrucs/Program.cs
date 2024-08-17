@@ -12,7 +12,7 @@
         }
 
         private readonly int _capacity = capacity;
-        private readonly SortedDictionary<ulong, Entry> order = [];
+        private readonly SortedDictionary<ulong, Tkey> order = [];
         private readonly Dictionary<Tkey, Entry> values = [];
 
         public void Add(Tkey key, Tvalue value)
@@ -26,7 +26,7 @@
                 Limit(_capacity - 1);
 
             entry.orderKey = NextOrderKey;
-            order.Add(entry.orderKey, entry);
+            order.Add(entry.orderKey, key);
             
             if (alreadyPresent)
                 values[key] = entry;
@@ -40,7 +40,8 @@
             {
                 if (Count == 0)
                     return ulong.MaxValue;
-                return order.First().Value.orderKey - 1;
+                var key = order.First().Value;
+                return values[key].orderKey - 1;
             }
         }
 
@@ -59,7 +60,7 @@
                 return false;
             order.Remove(entry.orderKey);
             entry.orderKey = NextOrderKey;
-            order.Add(entry.orderKey, entry);
+            order.Add(entry.orderKey, entry.key);
             value = entry.value;
             return true;
         }
@@ -70,10 +71,11 @@
                 return false;
             if (index >= values.Count)
                 return false;
-            var entry = order.Skip(index - 1).Take(1).First().Value;
+            var key = order.Skip(index - 1).Take(1).First().Value;
+            var entry = values[key];
             order.Remove(entry.orderKey);
             entry.orderKey = NextOrderKey;
-            order.Add(entry.orderKey, entry);
+            order.Add(entry.orderKey, key);
             value = entry.value;
             return true;
         }
@@ -87,7 +89,8 @@
 
             while (Count > count)
             {
-                var entry = order.Last().Value;
+                var key = order.Last().Value;
+                var entry = values[key];
                 order.Remove(entry.orderKey);
                 values.Remove(entry.key);
             }
@@ -105,9 +108,13 @@
             int value = int.MinValue;
             Console.WriteLine(lru.TryGet("apple", ref value));
             Console.WriteLine(value);
+            Console.WriteLine(lru.TryGet(-1, ref value));
+            Console.WriteLine(value);
             Console.WriteLine(lru.TryGet(0, ref value));
             Console.WriteLine(value);
             Console.WriteLine(lru.TryGet(1, ref value));
+            Console.WriteLine(value);
+            Console.WriteLine(lru.TryGet(2, ref value));
             Console.WriteLine(value);
             Console.WriteLine(lru.TryGet("orange", ref value));
             Console.WriteLine(value);
